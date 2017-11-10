@@ -1,6 +1,9 @@
 const phantomPool = require('phantom-pool');
 
-const pool = phantomPool();
+const pool = phantomPool({
+	phantomArgs: [[], {
+	}]
+});
 
 module.exports = {
 	run: function(code) {
@@ -8,12 +11,11 @@ module.exports = {
 			return instance.createPage()
 			.then(function(page) {
 				const consoleLogs = []
-				page.property('onConsoleMessage', function(msg) {
+				page.on('onConsoleMessage', function(msg) {
+					console.log("message");
 					consoleLogs.push(msg);
 				});
-				page.property('onError', function(msg) {
-					consoleLogs.push(msg);
-				});
+				console.log("hello");
 				return new Promise(function(resolve, reject) {
 					let completed = false;
 					setTimeout(function() {
@@ -36,6 +38,9 @@ module.exports = {
 				})
 				.then(function(result) {
 					return {result, console: consoleLogs};
+				})
+				.catch(function(err) {
+					return {result: err, console: consoleLogs};
 				});
 			});
 		});

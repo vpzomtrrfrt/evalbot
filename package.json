@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "discord.js": "^11.2.1",
-    "phantom": "^4.0.5",
     "phantom-pool": "^1.2.2"
   }
 }
