@@ -1,13 +1,22 @@
-const phantomPool = require('phantom-pool');
+const phantom = require('phantom');
 
-const pool = phantomPool({
-	phantomArgs: [[], {
-	}]
-});
+function runPhantom(callback) {
+	return phantom.create()
+	.then(function(instance) {
+		return callback(instance)
+		.then(function(result) {
+			instance.exit();
+			return result;
+		}, function(err) {
+			instance.exit();
+			return Promise.reject(result);
+		});
+	});
+};
 
 module.exports = {
 	run: function(code) {
-		return pool.use(function(instance) {
+		return runPhantom(function(instance) {
 			return instance.createPage()
 			.then(function(page) {
 				const consoleLogs = []
